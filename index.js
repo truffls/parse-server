@@ -16,7 +16,20 @@ var api = new ParseServer({
   cloud: process.env.CLOUD_CODE_MAIN || __dirname + '/cloud/main.js',
   appId: process.env.APP_ID || 'myAppId',
   masterKey: process.env.MASTER_KEY || '', //Add your master key here. Keep it secret!
+  fileKey: process.env.FILE_KEY || '', // Add the file key to provide access to files already hosted on Parse
   serverURL: process.env.SERVER_URL || 'http://localhost:1337/parse',  // Don't forget to change to https if needed
+  push: {
+    android: {
+      senderId: '',
+      apiKey: ''
+    },
+    ios: {
+      pfx: '', // TODO
+      passphrase: '', // optional password to your p12/PFX
+      bundleId: '',
+      production: false
+    }
+  },
   liveQuery: {
     classNames: ["Posts", "Comments"] // List of classes to support for query subscriptions
   }
