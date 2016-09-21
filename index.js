@@ -11,6 +11,12 @@ if (!databaseUri) {
   console.log('DATABASE_URI not specified, falling back to localhost.');
 }
 
+var ios_pfx_dev = path.join(__dirname, 'ios_pfx', process.env.FLAVOUR + '-' + process.env.ENVIRONMENT + '-dev.p12')
+var ios_pfx_prod = path.join(__dirname, 'ios_pfx', process.env.FLAVOUR + '-' + process.env.ENVIRONMENT + '-prod.p12')
+
+console.log('ios_pfx_dev: ' + ios_pfx_dev);
+console.log('ios_pfx_prod: ' + ios_pfx_prod);
+
 var api = new ParseServer({
   databaseURI: databaseUri || 'mongodb://localhost:27017/dev',
   cloud: process.env.CLOUD_CODE_MAIN || __dirname + '/cloud/main.js',
@@ -20,15 +26,23 @@ var api = new ParseServer({
   serverURL: process.env.SERVER_URL || 'http://localhost:1337/parse',  // Don't forget to change to https if needed
   push: {
     android: {
-      senderId: process.env.GCM_SENDER_ID || '',
-      apiKey: process.env.GCM_API_KEY || ''
-    }/*,
-    ios: {
-      pfx: '', // TODO
-      passphrase: '', // optional password to your p12/PFX
-      bundleId: '',
-      production: false
-    }*/
+      senderId: process.env.GCM_SENDER_ID || 'setMe',
+      apiKey: process.env.GCM_API_KEY || 'setMe'
+    },
+    ios: [
+      {
+        pfx: ios_pfx_dev,
+        passphrase: '', // optional password to your p12/PFX
+        bundleId: process.env.IOS_BUNDLE_ID || 'setMe',
+        production: false
+      },
+      {
+        pfx: ios_pfx_prod,
+        passphrase: '', // optional password to your p12/PFX
+        bundleId: process.env.IOS_BUNDLE_ID || 'setMe',
+        production: true
+      }
+    ]
   },
   liveQuery: {
     classNames: ["Posts", "Comments"] // List of classes to support for query subscriptions

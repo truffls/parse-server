@@ -1,0 +1,8 @@
+.elasticbeanstalk/*
+!.elasticbeanstalk/*.cfg.yml
+!.elasticbeanstalk/*.global.yml
+
+.idea/
+.git/
+logs/
+node_modules/
