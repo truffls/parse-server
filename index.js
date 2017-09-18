@@ -22,17 +22,15 @@ var ios_certs = [
   }
 ];
 
-if (process.env.ENVIRONMENT != 'live') {
-  var ios_pfx_dev = path.join(__dirname, 'ios_pfx', process.env.FLAVOUR + '-' + process.env.ENVIRONMENT + '-dev.p12');
-  console.log('ios_pfx_dev: ' + ios_pfx_dev);
-  dev_cert = {
-    pfx: ios_pfx_dev,
-    passphrase: '', // optional password to your p12/PFX
-    bundleId: process.env.IOS_BUNDLE_ID || 'setMe',
-    production: false
-  };
-  ios_certs.push(dev_cert)
-}
+var ios_pfx_dev = path.join(__dirname, 'ios_pfx', process.env.FLAVOUR + '-' + process.env.ENVIRONMENT + '-dev.p12');
+console.log('ios_pfx_dev: ' + ios_pfx_dev);
+dev_cert = {
+  pfx: ios_pfx_dev,
+  passphrase: '', // optional password to your p12/PFX
+  bundleId: process.env.IOS_BUNDLE_ID || 'setMe',
+  production: false
+};
+ios_certs.push(dev_cert);
 
 var api = new ParseServer({
   databaseURI: databaseUri || 'mongodb://localhost:27017/dev',
