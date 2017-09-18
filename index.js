@@ -11,12 +11,8 @@ if (!databaseUri) {
   console.log('DATABASE_URI not specified, falling back to localhost.');
 }
 
-var ios_pfx_dev = path.join(__dirname, 'ios_pfx', process.env.FLAVOUR + '-' + process.env.ENVIRONMENT + '-dev.p12');
 var ios_pfx_prod = path.join(__dirname, 'ios_pfx', process.env.FLAVOUR + '-' + process.env.ENVIRONMENT + '-prod.p12');
-
-console.log('ios_pfx_dev: ' + ios_pfx_dev);
 console.log('ios_pfx_prod: ' + ios_pfx_prod);
-
 var ios_certs = [
   {
     pfx: ios_pfx_prod,
@@ -27,6 +23,8 @@ var ios_certs = [
 ];
 
 if (process.env.ENVIRONMENT != 'live') {
+  var ios_pfx_dev = path.join(__dirname, 'ios_pfx', process.env.FLAVOUR + '-' + process.env.ENVIRONMENT + '-dev.p12');
+  console.log('ios_pfx_dev: ' + ios_pfx_dev);
   dev_cert = {
     pfx: ios_pfx_dev,
     passphrase: '', // optional password to your p12/PFX
