@@ -1,5 +1,4 @@
-// Example express application adding the parse-server module to expose Parse
-// compatible API routes.
+// express application adding the parse-server module to expose Parse compatible API routes.
 
 var express = require('express');
 var ParseServer = require('parse-server').ParseServer;
@@ -11,26 +10,9 @@ if (!databaseUri) {
   console.log('DATABASE_URI not specified, falling back to localhost.');
 }
 
-var ios_pfx_prod = path.join(__dirname, 'ios_pfx', process.env.FLAVOUR + '-' + process.env.ENVIRONMENT + '-prod.p12');
-console.log('ios_pfx_prod: ' + ios_pfx_prod);
-var ios_certs = [
-  {
-    pfx: ios_pfx_prod,
-    passphrase: '', // optional password to your p12/PFX
-    bundleId: process.env.IOS_BUNDLE_ID || 'setMe',
-    production: true
-  }
-];
-
-var ios_pfx_dev = path.join(__dirname, 'ios_pfx', process.env.FLAVOUR + '-' + process.env.ENVIRONMENT + '-dev.p12');
-console.log('ios_pfx_dev: ' + ios_pfx_dev);
-dev_cert = {
-  pfx: ios_pfx_dev,
-  passphrase: '', // optional password to your p12/PFX
-  bundleId: process.env.IOS_BUNDLE_ID || 'setMe',
-  production: false
-};
-ios_certs.push(dev_cert);
+var iosKeyId = process.env.IOS_KEY_ID || 'setMe';
+var iosTeamId = process.env.IOS_TEAM_ID || 'setMe';
+var iosKeyPath = path.join(__dirname, 'ios_pfx', iosKeyId + '.p8');
 
 var api = new ParseServer({
   databaseURI: databaseUri || 'mongodb://localhost:27017/dev',
@@ -44,7 +26,15 @@ var api = new ParseServer({
       senderId: process.env.GCM_SENDER_ID || 'setMe',
       apiKey: process.env.GCM_API_KEY || 'setMe'
     },
-    ios: ios_certs
+    ios: {
+      token: {
+        key: iosKeyPath,
+        keyId: iosKeyId,
+        teamId: iosTeamId
+      },
+      topic: process.env.IOS_BUNDLE_ID,
+      production: true
+    }
   },
   liveQuery: {
     classNames: ["Posts", "Comments"] // List of classes to support for query subscriptions
@@ -56,28 +46,19 @@ var api = new ParseServer({
 
 var app = express();
 
-// Serve static assets from the /public folder
-app.use('/public', express.static(path.join(__dirname, '/public')));
-
 // Serve the Parse API on the /parse URL prefix
 var mountPath = process.env.PARSE_MOUNT || '/parse';
 app.use(mountPath, api);
 
 // Parse Server plays nicely with the rest of your web routes
 app.get('/', function(req, res) {
-  res.status(200).send('I dream of being a website.  Please star the parse-server repo on GitHub!');
-});
-
-// There will be a test page available on the /test path of your server url
-// Remove this before launching your app
-app.get('/test', function(req, res) {
-  res.sendFile(path.join(__dirname, '/public/test.html'));
+  res.status(200).send('Up and running.');
 });
 
 var port = process.env.PORT || 1337;
 var httpServer = require('http').createServer(app);
 httpServer.listen(port, function() {
-    console.log('parse-server-example running on port ' + port + '.');
+    console.log('parse-server running on port ' + port + '.');
 });
 
 // This will enable the Live Query real-time server
