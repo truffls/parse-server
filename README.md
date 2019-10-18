@@ -4,6 +4,17 @@ Truffls project using the [parse-server](https://github.com/ParsePlatform/parse-
 
 Read the full Parse Server guide here: https://github.com/ParsePlatform/parse-server/wiki/Parse-Server-Guide
 
+## Upgrading the mongo db scheme
+When upgrading from the original mongo db dump to the latest parse server version, you have to delete some
+indexes, otherwise you will face some errors on startup. Connect to the correct mongo db and there run:
+
+```
+db.getCollection("_Role").dropIndex("name_1")
+db.getCollection("_Audience").dropIndex("name_1")
+db.getCollection("_User").dropIndex("username_1")
+db.getCollection("_User").dropIndex("email_1")
+```
+
 ### For Local Development
 
 * Make sure you have at least Node 4.3. `node --version`
