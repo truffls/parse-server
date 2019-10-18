@@ -26,15 +26,26 @@ var api = new ParseServer({
       senderId: process.env.GCM_SENDER_ID || 'setMe',
       apiKey: process.env.GCM_API_KEY || 'setMe'
     },
-    ios: {
-      token: {
-        key: iosKeyPath,
-        keyId: iosKeyId,
-        teamId: iosTeamId
+    ios: [
+      {
+        token: {
+          key: iosKeyPath,
+          keyId: iosKeyId,
+          teamId: iosTeamId
+        },
+        topic: process.env.IOS_BUNDLE_ID,
+        production: true
       },
-      topic: process.env.IOS_BUNDLE_ID,
-      production: true
-    }
+      {
+        token: {
+          key: iosKeyPath,
+          keyId: iosKeyId,
+          teamId: iosTeamId
+        },
+        topic: process.env.IOS_BUNDLE_ID,
+        production: false
+      }
+    ]
   },
   liveQuery: {
     classNames: ["Posts", "Comments"] // List of classes to support for query subscriptions
